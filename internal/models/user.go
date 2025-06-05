@@ -6,24 +6,24 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type Users struct {
-	ID          uint   `json:"id" gorm:"primaryKey"`
-	UserName    string `json:"username" gorm:"column:username;type:varchar(20)" validate:"required"`
-	Email       string `json:"email" gorm:"column:email;type:varchar(100)" validate:"required"`
-	PhoneNumber string `json:"phone_number" gorm:"column:phone_number;type:varchar(15)" validate:"required"`
-	FullName    string `json:"full_name" gorm:"column:full_name;type:varchar(100)" validate:"required"`
-	Address     string `json:"address" gorm:"column:address;type:text"`
-	Dob         string `json:"dob" gorm:"column:dob;type:date"`
-	Password    string `json:"password" gorm:"column:password;type:varchar(255)" validate:"required"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+type User struct {
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	UserName    string    `json:"username" gorm:"column:username;type:varchar(20)" validate:"required"`
+	Email       string    `json:"email" gorm:"column:email;type:varchar(100)" validate:"required"`
+	PhoneNumber string    `json:"phone_number" gorm:"column:phone_number;type:varchar(15)" validate:"required"`
+	FullName    string    `json:"full_name" gorm:"column:full_name;type:varchar(100)" validate:"required"`
+	Address     string    `json:"address" gorm:"column:address;type:text"`
+	Dob         string    `json:"dob" gorm:"column:dob;type:date"`
+	Password    string    `json:"password,omitempty" gorm:"column:password;type:varchar(255)" validate:"required"`
+	CreatedAt   time.Time `json:"-"`
+	UpdatedAt   time.Time `json:"-"`
 }
 
-func (*Users) TableName() string {
+func (*User) TableName() string {
 	return "users"
 }
 
-func (l Users) Validate() error {
+func (l User) Validate() error {
 	v := validator.New()
 	return v.Struct(l)
 }

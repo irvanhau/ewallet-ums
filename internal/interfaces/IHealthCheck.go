@@ -1,9 +1,14 @@
 package interfaces
 
-type IHealthCheckServices interface{
-	HealthCheckServices() (string,error)
+import "github.com/gin-gonic/gin"
+
+type IHealthCheckHandler interface {
+	HealthCheckHandlerHTTP(c *gin.Context)
 }
 
-type IHealthCheckRepo interface{
-	
+type IHealthCheckServices interface {
+	HealthCheckServices() (string, error)
+}
+
+type IHealthCheckRepo interface {
 }

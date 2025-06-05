@@ -3,6 +3,7 @@ package cmd
 import (
 	"ewallet-ums/helpers"
 	"ewallet-ums/internal/api"
+	"ewallet-ums/internal/interfaces"
 	"ewallet-ums/internal/repository"
 	"ewallet-ums/internal/services"
 	"log"
@@ -19,6 +20,7 @@ func ServeHTTP() {
 	userV1 := r.Group("/user/v1")
 	userV1.POST("/register", dependency.RegisterAPI.Register)
 	userV1.POST("/login", dependency.LoginAPI.Login)
+	userV1.DELETE("/logout", dependency.MiddlewareValidateAuth, dependency.LogoutAPI.Logout)
 
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {
@@ -27,9 +29,12 @@ func ServeHTTP() {
 }
 
 type Dependency struct {
-	HealthCheckAPI *api.HealthCheck
-	RegisterAPI    *api.RegisterHandler
-	LoginAPI       *api.LoginHandler
+	UserRepository interfaces.IUserRepository
+
+	HealthCheckAPI interfaces.IHealthCheckHandler
+	RegisterAPI    interfaces.IRegisterHandler
+	LoginAPI       interfaces.ILoginHandler
+	LogoutAPI      interfaces.ILogoutHandler
 }
 
 func dependencyInject() Dependency {
@@ -55,9 +60,18 @@ func dependencyInject() Dependency {
 		LoginService: loginSvc,
 	}
 
+	logoutSvc := &services.LogoutService{
+		UserRepository: userRepo,
+	}
+	logoutAPI := &api.LogoutHandler{
+		LogoutService: logoutSvc,
+	}
+
 	return Dependency{
+		UserRepository: userRepo,
 		HealthCheckAPI: healthCheckAPI,
 		RegisterAPI:    registerAPI,
 		LoginAPI:       loginAPI,
+		LogoutAPI:      logoutAPI,
 	}
 }

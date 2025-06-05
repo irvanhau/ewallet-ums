@@ -28,7 +28,7 @@ func (l User) Validate() error {
 	return v.Struct(l)
 }
 
-type UserSessions struct {
+type UserSession struct {
 	ID                  uint `gorm:"primaryKey"`
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
@@ -39,11 +39,11 @@ type UserSessions struct {
 	RefreshTokenExpired time.Time `json:"-" validate:"required"`
 }
 
-func (*UserSessions) TableName() string {
+func (*UserSession) TableName() string {
 	return "user_sessions"
 }
 
-func (l UserSessions) Validate() error {
+func (l UserSession) Validate() error {
 	v := validator.New()
 	return v.Struct(l)
 }

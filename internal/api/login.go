@@ -10,15 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterHandler struct {
-	RegisterService interfaces.IRegisterService
+type LoginHandler struct {
+	LoginService interfaces.ILoginService
 }
 
-func (api *RegisterHandler) Register(c *gin.Context) {
+func (api *LoginHandler) Login(c *gin.Context) {
 	var (
-		log = helpers.Logger
+		log  = helpers.Logger
+		req  models.LoginRequest
+		resp models.LoginResponse
 	)
-	req := models.User{}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error("failed to parse request: ", err)
@@ -32,12 +33,12 @@ func (api *RegisterHandler) Register(c *gin.Context) {
 		return
 	}
 
-	resp, err := api.RegisterService.Register(c.Request.Context(), req)
+	resp, err := api.LoginService.Login(c.Request.Context(), req)
 	if err != nil {
-		log.Error("failed to register new user: ", err)
+		log.Error("failed to login new user: ", err)
 		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
 		return
 	}
 
-	helpers.SendResponseHTTP(c, http.StatusCreated, constants.SuccessMessage, resp)
+	helpers.SendResponseHTTP(c, http.StatusOK, constants.SuccessMessage, resp)
 }

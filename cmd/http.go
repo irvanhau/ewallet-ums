@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"ewallet-ums/external"
 	"ewallet-ums/helpers"
 	"ewallet-ums/internal/api"
 	"ewallet-ums/internal/interfaces"
@@ -48,11 +49,14 @@ func dependencyInject() Dependency {
 		HealthCheckServices: healthCheckSvc,
 	}
 
+	extWallet := &external.ExtWallet{}
+
 	userRepo := &repository.UserRepository{
 		DB: helpers.DB,
 	}
 	registerSvc := &services.RegisterService{
 		UserRepository: userRepo,
+		ExternalWallet: extWallet,
 	}
 	registerAPI := &api.RegisterHandler{
 		RegisterService: registerSvc,

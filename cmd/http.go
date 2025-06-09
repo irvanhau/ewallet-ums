@@ -38,6 +38,8 @@ type Dependency struct {
 	LoginAPI        interfaces.ILoginHandler
 	LogoutAPI       interfaces.ILogoutHandler
 	RefreshTokenAPI interfaces.IRefreshTokenHandler
+
+	TokenValidationAPI *api.TokenValidationHandler
 }
 
 func dependencyInject() Dependency {
@@ -77,12 +79,20 @@ func dependencyInject() Dependency {
 		RefreshTokenService: refreshTokenSvc,
 	}
 
+	tokenValidationSvc := &services.TokenValidationService{
+		UserRepository: userRepo,
+	}
+	tokenValidationAPI := &api.TokenValidationHandler{
+		TokenValidationService: tokenValidationSvc,
+	}
+
 	return Dependency{
-		UserRepository:  userRepo,
-		HealthCheckAPI:  healthCheckAPI,
-		RegisterAPI:     registerAPI,
-		LoginAPI:        loginAPI,
-		LogoutAPI:       logoutAPI,
-		RefreshTokenAPI: refreshTokenAPI,
+		UserRepository:     userRepo,
+		HealthCheckAPI:     healthCheckAPI,
+		RegisterAPI:        registerAPI,
+		LoginAPI:           loginAPI,
+		LogoutAPI:          logoutAPI,
+		RefreshTokenAPI:    refreshTokenAPI,
+		TokenValidationAPI: tokenValidationAPI,
 	}
 }

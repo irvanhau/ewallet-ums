@@ -49,14 +49,14 @@ func dependencyInject() Dependency {
 		HealthCheckServices: healthCheckSvc,
 	}
 
-	extWallet := &external.ExtWallet{}
+	extWallet := &external.External{}
 
 	userRepo := &repository.UserRepository{
 		DB: helpers.DB,
 	}
 	registerSvc := &services.RegisterService{
 		UserRepository: userRepo,
-		ExternalWallet: extWallet,
+		External:       extWallet,
 	}
 	registerAPI := &api.RegisterHandler{
 		RegisterService: registerSvc,

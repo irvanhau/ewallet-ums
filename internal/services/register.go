@@ -10,7 +10,7 @@ import (
 
 type RegisterService struct {
 	UserRepository interfaces.IUserRepository
-	ExternalWallet interfaces.IWallet
+	External       interfaces.IExternal
 }
 
 func (s *RegisterService) Register(ctx context.Context, req models.User) (interface{}, error) {
@@ -26,10 +26,14 @@ func (s *RegisterService) Register(ctx context.Context, req models.User) (interf
 		return nil, err
 	}
 
-	_, err = s.ExternalWallet.CreateWallet(ctx, req.ID)
+	_, err = s.External.CreateWallet(ctx, req.ID)
 	if err != nil {
 		return nil, err
 	}
+
+	s.External.SendNotification(ctx, req.Email, "register", map[string]string{
+		"full_name": req.FullName,
+	})
 
 	resp := req
 	resp.Password = ""
